@@ -12,7 +12,7 @@ Open-source app editions by Nithilan Vivek. [Project website](https://nithi.land
 
 ## Releases
 
-Download packages from [GitHub Releases](https://github.com/vivekroark-cpu/conways-game-of-life-lab/releases). Compiled packages are release attachments, not committed to source history. Checksums accompany downloads. Existing files are republished unchanged; publishing them does not add new platform testing or signing.
+Download packages from [GitHub Releases](https://github.com/nithilanvivek/conways-game-of-life-lab/releases). Compiled packages are release attachments, not committed to source history. Checksums accompany downloads. Existing files are republished unchanged; publishing them does not add new platform testing or signing.
 
 The public desktop release is v3.0. Its existing Windows payload has internal version 3.2-testing; the Mac app has internal version 3.1/build 8. Package names and app identities are preserved. The current native ChromeOS APK is debug-signed and remains a testing edition. Legacy Android/ChromeOS v2.0 packages are separate release-signed editions. Native Linux binaries require compatible GTK3/JSON-GLib system libraries; they are not Flatpaks.
 

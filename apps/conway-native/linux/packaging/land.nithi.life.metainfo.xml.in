@@ -14,8 +14,8 @@
   </developer>
   <launchable type="desktop-id">land.nithi.life.desktop</launchable>
   <url type="homepage">https://nithi.land/projects/conways-game-of-life/</url>
-  <url type="bugtracker">https://github.com/vivekroark-cpu/conways-game-of-life-lab/issues</url>
-  <url type="vcs-browser">https://github.com/vivekroark-cpu/conways-game-of-life-lab</url>
+  <url type="bugtracker">https://github.com/nithilanvivek/conways-game-of-life-lab/issues</url>
+  <url type="vcs-browser">https://github.com/nithilanvivek/conways-game-of-life-lab</url>
   <provides><binary>nithi-life</binary></provides>
   <content_rating type="oars-1.1"/>
   <screenshots>
