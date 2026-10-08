@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Conway’s Game of Life Lab
+Comment=Explore cellular life on an infinite canvas
+Exec=nithi-life
+Icon=land.nithi.life
+Terminal=false
+Categories=Education;Science;Simulation;
+Keywords=Conway;Life;Cells;Automaton;Patterns;
+StartupNotify=true

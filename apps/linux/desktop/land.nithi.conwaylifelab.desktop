@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Conway's Game Of Life Lab
+Comment=Explore Conway's Game of Life with canvases, patterns, themes, and statistics
+Exec=conway-life-lab
+Icon=land.nithi.conwaylifelab
+Terminal=false
+Categories=Education;Science;Math;
+Keywords=Conway;Game of Life;cellular automaton;math;
+

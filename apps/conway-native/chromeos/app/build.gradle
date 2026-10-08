@@ -1,0 +1,10 @@
+plugins { id 'com.android.application' }
+android {
+    namespace 'land.nithi.life'
+    useLibrary 'android.test.runner'
+    useLibrary 'android.test.base'
+    compileSdk { version = release(36) { minorApiLevel = 1 } }
+    defaultConfig { applicationId 'land.nithi.conwaylifelab.chromeos'; minSdk 26; targetSdk 36; versionCode 9; versionName '3.1'; testInstrumentationRunner 'android.test.InstrumentationTestRunner' }
+    sourceSets { main { assets.srcDirs += ["../../shared"] } }
+    buildTypes { release { minifyEnabled false } }
+}

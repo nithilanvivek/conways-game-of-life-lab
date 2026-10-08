@@ -1,0 +1,14 @@
+Conway's Game Of Life Lab — Windows distribution
+
+This installer contains the approved self-contained Windows application, file version 3.2.0.4, distributed as part of the v3.0 desktop release.
+
+The application includes Microsoft .NET 10.0.11 and Windows Presentation Foundation. Microsoft .NET and WPF are licensed under the MIT License; see DOTNET-LICENSE.txt. Third-party notices for .NET are in DOTNET-THIRD-PARTY-NOTICES.txt.
+
+Additional Microsoft Windows Desktop SDK notices are retained in WPF-THIRD-PARTY-NOTICES.txt.
+
+Official source and license references:
+https://github.com/dotnet/runtime/tree/v10.0.11
+https://github.com/dotnet/wpf
+https://github.com/dotnet/wpf/blob/main/LICENSE.TXT
+
+Installation is for the current Windows account. Saved canvases, saved patterns and application recovery data are not removed by the uninstaller.

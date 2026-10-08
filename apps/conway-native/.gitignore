@@ -1,0 +1,7 @@
+**/bin/
+**/obj/
+**/local.properties
+linux/nithi-life
+
+# Local Android Studio workspace state
+chromeos/.idea/

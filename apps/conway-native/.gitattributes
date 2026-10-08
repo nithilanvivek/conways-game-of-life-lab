@@ -1,0 +1,2 @@
+# Preserve the archived compatibility fixture's original mixed line endings.
+tests/fixtures/v2-original-source.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

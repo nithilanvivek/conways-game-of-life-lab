@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>land.nithi.life</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>@PROJECT_LICENSE@</project_license>
+  <name>Conway’s Game of Life Lab</name>
+  <summary>Explore cellular life on an infinite canvas</summary>
+  <description>
+    <p>Paint cells, place patterns, and watch Conway’s Game of Life evolve. Explore an infinite canvas or choose a fixed chart size.</p>
+    <p>Track live cells with a running graph, adjust the rules, save canvases and patterns, and switch between Dark, Light, and Sepia themes. A guided tour explains the controls and keyboard shortcuts.</p>
+  </description>
+  <developer id="land.nithi">
+    <name>Nithilan Vivek</name>
+  </developer>
+  <launchable type="desktop-id">land.nithi.life.desktop</launchable>
+  <url type="homepage">https://nithi.land/projects/conways-game-of-life/</url>
+  <url type="bugtracker">https://github.com/vivekroark-cpu/conways-game-of-life-lab/issues</url>
+  <url type="vcs-browser">https://github.com/vivekroark-cpu/conways-game-of-life-lab</url>
+  <provides><binary>nithi-life</binary></provides>
+  <content_rating type="oars-1.1"/>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Pattern library, canvas and live-cell graph in Dark theme</caption>
+      <image type="source" width="1400" height="900">https://nithi.land/assets/conways-game-of-life/native-linux.png</image>
+    </screenshot>
+  </screenshots>
+  <releases>
+    <release version="3.1" date="2026-10-07">
+      <description><p>Native canvas, pattern library, live-cell history graph, themes, and guided tour.</p></description>
+    </release>
+  </releases>
+</component>

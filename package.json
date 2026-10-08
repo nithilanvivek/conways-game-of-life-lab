@@ -1,0 +1,10 @@
+{
+  "name": "conways-game-of-life-lab",
+  "version": "3.0.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "node scripts/serve-static.mjs --port 4174"
+  },
+  "devDependencies": {}
+}

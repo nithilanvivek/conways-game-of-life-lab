@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType><TargetFramework>net10.0-windows</TargetFramework><UseWPF>true</UseWPF><EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><AssemblyName>Conway's Game of Life Lab</AssemblyName><Version>3.2.0</Version><FileVersion>3.2.0.4</FileVersion>
+    <PublishSingleFile>true</PublishSingleFile><SelfContained>true</SelfContained><IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract><EnableCompressionInSingleFile>true</EnableCompressionInSingleFile><DebugType>none</DebugType><ApplicationIcon>AppIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+<ItemGroup>
+  <EmbeddedResource Include="AppIcon.ico" LogicalName="Nithi.Life.AppIcon.ico"/>
+  <EmbeddedResource Include="../shared/tour.json" LogicalName="Nithi.Life.tour.json"/>
+</ItemGroup></Project>

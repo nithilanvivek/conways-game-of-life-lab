@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+    <meta name="color-scheme" content="dark light">
+    <title>Conway's Game Of Life Lab</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body data-theme="dark">
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="app-title">Conway's Game Of Life Lab</div>
+        <div class="file-actions">
+          <button data-action="save-canvas">Save Canvas</button>
+          <select aria-label="Saved canvases" data-saved-canvases>
+            <option value="">No saved canvases</option>
+          </select>
+          <button class="icon-button danger" aria-label="Delete selected canvas" data-action="delete-canvas">×</button>
+          <button data-action="load-canvas">Load Canvas</button>
+          <button data-action="export-canvas">Export</button>
+          <button data-action="import-canvas">Import</button>
+          <button data-action="choose-data-folder">Choose Data Folder</button>
+          <span class="folder-status" data-folder-status>Private storage</span>
+          <input data-import-file type="file" accept=".json,.life.json,application/json" hidden>
+        </div>
+        <div class="utility-actions">
+          <button data-action="rules">Rules</button>
+          <button data-action="tour">Tour / Demo</button>
+          <button data-action="help">Help</button>
+        </div>
+        <div class="generation" aria-live="polite">
+          <strong data-generation>Generation: 0</strong>
+          <span data-status>Ready.</span>
+        </div>
+      </header>
+
+      <section class="work-area">
+        <aside class="controls left-controls" aria-label="Simulation controls">
+          <button class="primary" data-action="toggle">Start</button>
+          <button class="primary" data-action="step">Step</button>
+          <button class="primary" data-action="clear">Clear</button>
+
+          <label>
+            <span>Random %</span>
+            <input data-density type="number" min="1" max="100" value="25" inputmode="numeric">
+          </label>
+          <button class="primary" data-action="generate">Generate</button>
+
+          <div class="control-group selection-tools">
+            <button data-action="selection-mode" aria-pressed="false">Select Cells</button>
+            <div class="button-pair">
+              <button data-action="copy">Copy</button>
+              <button data-action="paste">Paste</button>
+            </div>
+            <button data-action="save-pattern" disabled>Save to Pattern Library</button>
+            <button class="primary" data-action="pattern-library">Pattern Library</button>
+          </div>
+        </aside>
+
+        <section class="board-panel">
+          <div class="board-toolbar">
+            <span data-live-cells>Live cells: 0</span>
+            <span data-rules-summary>S2–3 / B3</span>
+            <button class="compact" data-action="cancel-mode" hidden>Cancel</button>
+          </div>
+          <div class="canvas-shell" data-canvas-shell>
+            <canvas
+              data-life-canvas
+              width="720"
+              height="480"
+              aria-label="Interactive Game of Life canvas"
+            ></canvas>
+          </div>
+        </section>
+
+        <aside class="controls right-controls" aria-label="Board controls">
+          <label>
+            <span>Rows</span>
+            <input data-rows type="number" min="5" max="100" value="20" inputmode="numeric">
+          </label>
+          <label>
+            <span>Columns</span>
+            <input data-cols type="number" min="5" max="100" value="30" inputmode="numeric">
+          </label>
+          <button class="primary" data-action="apply-size">Apply Size</button>
+
+          <div class="control-group history-tools">
+            <button class="primary" data-action="undo">Undo</button>
+            <button class="primary" data-action="back">Back</button>
+            <button class="primary" data-action="reset">Reset Gen 0</button>
+          </div>
+
+          <label>
+            <span>Duration (seconds)</span>
+            <input data-delay type="number" min="0.1" max="10" step="0.01" value="0.50" inputmode="decimal">
+          </label>
+          <label>
+            <span>Mode</span>
+            <select data-theme>
+              <option>Light</option>
+              <option selected>Dark</option>
+              <option>Sepia</option>
+            </select>
+          </label>
+        </aside>
+      </section>
+
+      <section class="graph-panel" aria-label="Population history graph">
+        <canvas data-graph-canvas width="1200" height="150"></canvas>
+      </section>
+    </main>
+
+    <dialog class="modal" data-dialog>
+      <form method="dialog" data-dialog-form>
+        <header>
+          <h2 data-dialog-title></h2>
+          <button class="icon-button" value="cancel" aria-label="Close">×</button>
+        </header>
+        <div class="modal-body" data-dialog-body></div>
+        <footer data-dialog-actions></footer>
+      </form>
+    </dialog>
+
+    <script src="app.js"></script>
+  </body>
+</html>

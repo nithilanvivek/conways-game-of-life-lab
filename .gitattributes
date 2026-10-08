@@ -1,0 +1,7 @@
+apps/conway-native/tests/fixtures/v2-original-source.py -text -whitespace
+apps/android/gradlew.bat -text -whitespace
+apps/conway-native/windows/notices/DOTNET-THIRD-PARTY-NOTICES.txt -text -whitespace
+apps/conway-native/windows/notices/WPF-THIRD-PARTY-NOTICES.txt -text -whitespace
+apps/linux/desktop/land.nithi.conwaylifelab.desktop -text -whitespace
+assets/conways-game-of-life/Conway.py -text -whitespace
+assets/downloads/conways-game-of-life/Conway.py -text -whitespace

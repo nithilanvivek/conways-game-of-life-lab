@@ -1,0 +1,87 @@
+[
+  {
+    "title": "Welcome to Conway’s Game of Life Lab",
+    "area": "Canvas",
+    "text": "This tour covers the canvas, simulation, patterns, editing, files, rules and themes. Help restarts it anytime. Your canvas is preserved during the tour."
+  },
+  {
+    "title": "An infinite canvas",
+    "area": "Specify Chart Size",
+    "text": "The canvas is infinite by default. Pan and zoom to explore in any direction. Specify Chart Size opens width and height fields: Apply sets a finite canvas, and Infinite returns to an infinite canvas. Wrap edges is available only on a finite canvas and connects opposite sides."
+  },
+  {
+    "title": "Paint, erase and pan",
+    "area": "Tools",
+    "text": "Drag to paint or erase. B chooses Paint; E chooses Erase. Pan is outlined when off and filled when on; H toggles it. Hold Alt (Option on Mac) while dragging for temporary panning."
+  },
+  {
+    "title": "Zoom and find your cells",
+    "area": "Fit",
+    "text": "Scroll or pinch to zoom around the pointer. + and − zoom in and out. F or Fit centers the living cells. Grid toggles the grid lines."
+  },
+  {
+    "title": "Navigate and select",
+    "area": "Unselect",
+    "text": "The cell cursor starts at the canvas centre and stays separate from the mouse pointer. Arrow keys move the cell cursor. Shift+arrow keys and Shift+drag add squares to a selection. The selection stays while you move the cursor. Click Unselect or press Esc once to clear it."
+  },
+  {
+    "title": "Edit selected cells",
+    "area": "",
+    "text": "Enter makes selected squares alive. Delete or Backspace makes them dead. Space inverts alive and dead. Without a selection, these keys act on the cursor square. Each edit is one undoable action."
+  },
+  {
+    "title": "Copy and paste",
+    "area": "Canvas",
+    "text": "{MOD}+C copies the selected squares. {MOD}+V pastes the copied block centered on the current cursor square. The rest of the canvas stays intact."
+  },
+  {
+    "title": "Place a pattern",
+    "area": "Pattern Library",
+    "text": "Choosing a pattern starts a translucent placement preview under your pointer. Move it to the desired square and click to place it. Placement adds the pattern’s live cells and preserves existing cells, including those under blank pattern squares. Esc cancels the preview."
+  },
+  {
+    "title": "Save your own patterns",
+    "area": "Save to Pattern Library",
+    "text": "Select squares, click Save to Pattern Library and give the pattern a name. It is stored locally and remains in the library after restarting the app. The button is disabled when nothing is selected."
+  },
+  {
+    "title": "Run the simulation",
+    "area": "Start",
+    "text": "Start and Stop control playback. Step or . advances one generation. Duration is seconds between generations, from 0.1 to 10. Generation and Live cells show progress. Equilibrium reached appears when the grid stops changing; counting continues."
+  },
+  {
+    "title": "Live-cell history",
+    "area": "Population Graph",
+    "text": "The line shows how the live-cell count changes over the latest 2,048 generations, without axes or scale labels. Step and playback extend it; edits update the current point. Back, Undo and Redo restore the matching graph. Clear, Generate and Reset Gen 0 start a fresh line. Saved canvases keep this history."
+  },
+  {
+    "title": "Undo, redo and time travel",
+    "area": "Undo",
+    "text": "{MOD}+Z undoes; {MOD}+Y redoes. Back returns to an earlier generation. Reset Gen 0 or {MOD}+R restores the generation-zero canvas. Clear empties the canvas. These changes can be undone."
+  },
+  {
+    "title": "Generate a random canvas",
+    "area": "Generate",
+    "text": "Random % gives each cell that chance of being alive; the resulting count is approximate. Generate fills the visible region on an infinite canvas, or the whole finite grid. Generate replaces the current cells and can be undone."
+  },
+  {
+    "title": "Edit the rules",
+    "area": "Edit Rules",
+    "text": "Edit Rules changes survival minimum, survival maximum and birth neighbor counts. Counts are 0–8; minimum must not exceed maximum. Birth at zero requires a finite canvas. Reset to Classic Conway restores survival 2–3 and birth 3."
+  },
+  {
+    "title": "Save and load locally",
+    "area": "Save Canvas",
+    "text": "{MOD}+S or Save Canvas opens a name popup. Load Canvas or {MOD}+O lists locally saved canvases. Editing a loaded canvas lets you overwrite it or save a new copy. Closing unsaved work offers Save, Discard and Cancel. Recovery autosaving does not count as an explicit save."
+  },
+  {
+    "title": "Import and export",
+    "area": "Export",
+    "text": "Import opens a canvas file. Export saves a copy to share or use on another device. Save Canvas keeps your work in the app’s library."
+  },
+  {
+    "title": "Choose a theme",
+    "area": "Theme",
+    "text": "You can switch between Dark, Light and Sepia themes here."
+  }
+]
