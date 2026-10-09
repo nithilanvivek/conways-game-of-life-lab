@@ -80,10 +80,11 @@ internal static class Program {
         Require(!window.Running && window.Engine.Generation == paused, "Stop pauses the simulation");
         using (var saved = JsonDocument.Parse(File.ReadAllText(Path.Combine(output, "isolated-data/canvas.life.json"))))
             Require(saved.RootElement.GetProperty("generation").GetInt64() == paused, "Simulation autosave records the displayed generation");
-        // Render the real app layout at native 1080p, independent of the CI monitor size.
+        // Render the real app layout at its natural 1600 × 1000 window size.
         // The host monitor is only 1024px wide; enlarging its screenshot would blur text.
         var root = (Grid)((AdornerDecorator)window.Content).Child;
-        root.Width = 1920; root.Height = 1080; root.Background = window.Background;
+        const int captureWidth = 1600, captureHeight = 1000;
+        root.Width = captureWidth; root.Height = captureHeight; root.Background = window.Background;
         root.Resources = window.Resources;
         TextElement.SetFontFamily(root, window.FontFamily);
         TextElement.SetFontSize(root, window.FontSize);
@@ -93,17 +94,27 @@ internal static class Program {
         // Remove the CI desktop's ancestor clip while retaining the actual UI controls,
         // resources and inherited typography. This changes the capture host only.
         ((AdornerDecorator)window.Content).Child = null;
+        using var captureHost = new HwndSource(new HwndSourceParameters("Conway native screenshot host") {
+            Width = captureWidth, Height = captureHeight, PositionX = 0, PositionY = 0,
+            WindowStyle = unchecked((int)0x90000000) // Visible native popup; no OS caption in content captures.
+        });
+        captureHost.RootVisual = root;
+        await Task.Delay(250);
         void Layout() {
-            root.Measure(new Size(1920, 1080)); root.Arrange(new Rect(0, 0, 1920, 1080));
+            root.InvalidateMeasure();
+            root.Measure(new Size(captureWidth, captureHeight)); root.Arrange(new Rect(0, 0, captureWidth, captureHeight));
             root.UpdateLayout();
         }
         void Capture(string name, bool fitLiving = true) {
             window.Update(); Layout(); window.Board.Fit(fitLiving);
-            var bitmap = new RenderTargetBitmap(1920, 1080, 96, 96, PixelFormats.Pbgra32);
+            var bitmap = new RenderTargetBitmap(captureWidth, captureHeight, 96, 96, PixelFormats.Pbgra32);
             bitmap.Render(root);
+            var corner = new byte[4];
+            bitmap.CopyPixels(new Int32Rect(captureWidth - 1, captureHeight - 1, 1, 1), corner, 4, 0);
+            Require(corner[3] == 255, name + " fills the full capture beyond the CI monitor bounds");
             var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
             using var file = File.Create(Path.Combine(output, name + ".png")); encoder.Save(file);
-            Require(root.ActualWidth == 1920 && root.ActualHeight == 1080, name + " renders at native 1920 × 1080");
+            Require(root.ActualWidth == captureWidth && root.ActualHeight == captureHeight, name + " renders at native 1600 × 1000");
         }
         foreach (var theme in new[] { "Dark", "Light", "Sepia" }) {
             picker.SelectedItem = theme; await Task.Delay(250);
@@ -130,7 +141,7 @@ internal static class Program {
         File.WriteAllText(Path.Combine(output, "windows-ui-report.json"), JsonSerializer.Serialize(new {
             platform = Environment.OSVersion.ToString(), compiledAssembly = typeof(LifeWindow).Assembly.GetName().Version?.ToString(), checks,
             interaction = "WPF UI Automation Invoke provider; actual mouse and installed MSIX testing remain separate",
-            screenshots = "Five native 1920 × 1080 WPF RenderTargetBitmap captures of compiled app content; no upscaling, OS chrome or marketing overlays"
+            screenshots = "Five native 1600 × 1000 WPF RenderTargetBitmap captures of compiled app content; no upscaling, padding, OS chrome or marketing overlays"
         }, new JsonSerializerOptions { WriteIndented = true }));
     }
 }
