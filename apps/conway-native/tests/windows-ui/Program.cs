@@ -105,8 +105,10 @@ internal static class Program {
             root.Measure(new Size(captureWidth, captureHeight)); root.Arrange(new Rect(0, 0, captureWidth, captureHeight));
             root.UpdateLayout();
         }
-        void Capture(string name, bool fitLiving = true) {
+        async Task Capture(string name, bool fitLiving = true) {
             window.Update(); Layout(); window.Board.Fit(fitLiving);
+            // Let WPF repaint the canvas after Fit updates its origin and zoom.
+            await Task.Delay(150);
             var bitmap = new RenderTargetBitmap(captureWidth, captureHeight, 96, 96, PixelFormats.Pbgra32);
             bitmap.Render(root);
             var corner = new byte[4];
@@ -125,18 +127,19 @@ internal static class Program {
             int pattern = theme == "Dark" ? 2 : theme == "Light" ? 1 : 5;
             window.Engine.LoadPattern(Catalog.All[pattern]);
             for (int i = 0; i < (theme == "Light" ? 18 : 80); i++) window.Engine.Step();
-            Capture("Conway-Windows-3.0-" + theme);
+            await Capture("Conway-Windows-3.0-" + theme);
         }
         picker.SelectedItem = "Dark"; await Task.Delay(250);
         window.Engine.LoadPattern(Catalog.All[1]);
         foreach (var cell in window.Engine.Live) window.Engine.Select(cell.X, cell.Y);
         window.SelectionChanged();
-        Capture("Conway-Windows-3.0-Pattern-Selection");
+        await Capture("Conway-Windows-3.0-Pattern-Selection");
         Require(window.Engine.Selection.Count > 0, "Editing screenshot contains a selected pattern");
         picker.SelectedItem = "Light"; await Task.Delay(250);
         window.Engine.ConfigureBorders(true, 64, 40); window.Engine.LoadPattern(Catalog.All[2]);
         for (int i = 0; i < 40; i++) window.Engine.Step();
-        Capture("Conway-Windows-3.0-Finite-Canvas", false);
+        window.SelectionChanged();
+        await Capture("Conway-Windows-3.0-Finite-Canvas", false);
         Require(window.Engine.Borders && window.Engine.Cols == 64 && window.Engine.Rows == 40, "Finite canvas screenshot displays configured boundaries");
         File.WriteAllText(Path.Combine(output, "windows-ui-report.json"), JsonSerializer.Serialize(new {
             platform = Environment.OSVersion.ToString(), compiledAssembly = typeof(LifeWindow).Assembly.GetName().Version?.ToString(), checks,

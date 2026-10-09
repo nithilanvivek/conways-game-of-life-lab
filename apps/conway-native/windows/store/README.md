@@ -35,9 +35,13 @@ at native size rather than enlarging the smaller samples.
 The packaging script runs the simulation regression suite and verifies the
 compiled embedded icon and tour bytes. On x64, it opens the compiled WPF window,
 dismisses the real first-use tour, invokes Step/Undo/Redo/Clear/Start/Stop through
-Windows UI Automation, checks autosave, and captures the three theme interfaces.
-These are native WPF rendered captures, not browser mockups. They do not establish
-that real pointer input or installed MSIX behavior works on a Windows 10/11 PC.
+Windows UI Automation, checks autosave, and captures five 1600×1000 interfaces:
+three themes with different simulation histories, pattern selection, and a finite
+canvas. The separate **Capture Conway Windows screenshots** workflow produces
+these images without rebuilding the complete Store bundle. The real compiled WPF
+layout is rendered at 1600×1000 without padding or enlarging the runner's smaller monitor
+image. They do not establish that real pointer input or installed MSIX behavior
+works on a Windows 10/11 PC.
 
 MakePri indexes icon variants. MakeAppx validation stays enabled; both packages are
 unpacked and their payload hashes checked, and the bundle's inner package hashes
@@ -58,6 +62,11 @@ It attempts installation of a separately signed x64 MSIX test copy and records
 the result. Hosted runners use Windows Server, so they cannot replace Windows
 10/11 installation or certification tests. A desktop shortcut opens the installed
 package when available, or the matching published native EXE otherwise.
+
+The October 9 test installed the signed test copy successfully on the hosted
+Windows Server runner. Remote access was blocked by ngrok error `ERR_NGROK_8013`:
+the account needs card verification for TCP endpoints. No remote desktop or
+pointer-input test was completed in that run.
 
 For a Store update, upload the new bundle, use screenshots captured from the
 Windows application, and review release notes and feature/requirement descriptions.
