@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF><EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings>
+    <ConwayAssemblyPath Condition="'$(ConwayAssemblyPath)' == ''">../../windows/bin/Release/net10.0-windows/win-x64/Conway's Game of Life Lab.dll</ConwayAssemblyPath>
+  </PropertyGroup>
+  <ItemGroup><Reference Include="Conway's Game of Life Lab"><HintPath>$(ConwayAssemblyPath)</HintPath></Reference></ItemGroup>
+</Project>

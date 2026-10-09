@@ -47,7 +47,7 @@ internal static class StartupDiagnostics {
                 Directory.CreateDirectory(directory);
                 logPath = Path.Combine(directory, "startup.log");
                 File.AppendAllText(logPath,
-                    $"Conway's Game of Life Lab v3.2-testing · Windows build 4{Environment.NewLine}" +
+                    $"Conway's Game of Life Lab v3.0 · Windows version 3.0.0.0{Environment.NewLine}" +
                     $"{DateTimeOffset.Now:O}{Environment.NewLine}" +
                     $"OS: {Environment.OSVersion}; architecture: {RuntimeInformation.ProcessArchitecture}{Environment.NewLine}" +
                     $"Runtime: {RuntimeInformation.FrameworkDescription}{Environment.NewLine}");
