@@ -7,6 +7,7 @@ Requires Pillow. Generated assets and the inspection sheet belong in dist/.
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
@@ -43,7 +44,7 @@ def specs():
     for name, base in BASES.items():
         variants[f"{name}.png"] = base
         for scale in SCALES:
-            size = tuple(round(edge * scale / 100) for edge in base)
+            size = tuple(math.ceil(edge * scale / 100) for edge in base)
             variants[f"{name}.scale-{scale}.png"] = size
     for size in TARGETS:
         for qualifier in ("", "_altform-unplated", "_altform-lightunplated"):
