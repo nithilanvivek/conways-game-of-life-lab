@@ -25,7 +25,7 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="3.1" date="2026-10-07">
+    <release version="3.0" date="2026-10-08">
       <description><p>Native canvas, pattern library, live-cell history graph, themes, and guided tour.</p></description>
     </release>
   </releases>
