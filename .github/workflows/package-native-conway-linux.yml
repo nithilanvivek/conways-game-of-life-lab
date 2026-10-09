@@ -1,0 +1,92 @@
+name: Package native Conway Linux
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/package-native-conway-linux.yml'
+      - 'apps/conway-native/linux/packaging/build-packages.sh'
+      - 'apps/conway-native/linux/main.c'
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            arch: x86_64
+            deb_arch: amd64
+          - runner: ubuntu-24.04-arm
+            arch: arm64
+            deb_arch: arm64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install build and offscreen test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes build-essential pkg-config libgtk-3-dev libjson-glib-dev librsvg2-dev libgirepository1.0-dev dpkg-dev xvfb desktop-file-utils appstream
+      - name: Build AppImage and DEB
+        run: |
+          set -o pipefail
+          mkdir -p dist/conway-linux/qa
+          bash apps/conway-native/linux/packaging/build-packages.sh "$PWD/dist/conway-linux" 2>&1 | tee dist/conway-linux/qa/build.log
+      - name: Test DEB upgrade and installed app
+        env:
+          FILE_ARCH: ${{ matrix.arch }}
+          DEB_ARCH: ${{ matrix.deb_arch }}
+        run: |
+          set -o pipefail
+          QA="$PWD/dist/conway-linux/qa"
+          mkdir -p "$QA/home/Conway Game of Life Canvases"
+          printf 'preserve user library\n' > "$QA/home/Conway Game of Life Canvases/upgrade-marker.txt"
+          {
+            curl --fail --location "https://nithi.land/assets/downloads/linux-apps/Conways-Game-Of-Life-Lab-2.0-$DEB_ARCH.deb" --output "$QA/legacy.deb"
+            case "$DEB_ARCH" in
+              amd64) LEGACY_SHA=698b08a9bbb9465d0ff90a9e9a89c64e6b11474c94c7ca24ba6e6c6e2884c792 ;;
+              arm64) LEGACY_SHA=5825fb0a48e4c090544d64a7e6e049afd17bf221c94012d68bea299de71608b1 ;;
+            esac
+            printf '%s  %s\n' "$LEGACY_SHA" "$QA/legacy.deb" | sha256sum --check
+            sudo apt-get install --yes "$QA/legacy.deb"
+            sudo apt-get install --yes "./dist/conway-linux/Conways-Game-Of-Life-Lab-3.0-$DEB_ARCH.deb"
+            test "$(dpkg-query -W -f='${Version}' nithi-land-conway-life-lab)" = 3.0
+            test "$(readlink /usr/bin/conway-life-lab)" = nithi-life
+            test ! -f /usr/share/applications/land.nithi.conwaylifelab.desktop
+            grep -qx 'preserve user library' "$QA/home/Conway Game of Life Canvases/upgrade-marker.txt"
+            desktop-file-validate /usr/share/applications/land.nithi.life.desktop
+            cmp apps/conway-native/LICENSE /usr/share/licenses/land.nithi.life/LICENSE
+            appstreamcli validate --no-net /usr/share/metainfo/land.nithi.life.metainfo.xml
+            HOME="$QA/home" LIFE_DATA_DIR="$QA/deb-library" XDG_DATA_HOME="$QA/deb-data" LIFE_SCREENSHOT="$QA/deb.png" timeout 60 xvfb-run -a -s '-screen 0 1440x1080x24' nithi-life --smoke-test
+          } 2>&1 | tee "$QA/deb-checks.log"
+      - name: Test packaged AppImage without FUSE or system GTK resources
+        env:
+          FILE_ARCH: ${{ matrix.arch }}
+        run: |
+          set -o pipefail
+          QA="$PWD/dist/conway-linux/qa"
+          IMAGE="$PWD/dist/conway-linux/Conways-Game-Of-Life-Lab-$FILE_ARCH.AppImage"
+          mkdir "$QA/extracted"
+          {
+            cd "$QA/extracted"
+            "$IMAGE" --appimage-extract > "$QA/appimage-files.txt"
+            test -f squashfs-root/usr/share/licenses/land.nithi.life/LICENSE
+            test -f squashfs-root/usr/share/glib-2.0/schemas/gschemas.compiled
+            test -d squashfs-root/usr/lib/gdk-pixbuf-2.0
+            HOME="$QA/home" LIFE_DATA_DIR="$QA/appimage-library" XDG_DATA_HOME="$QA/appimage-data" XDG_DATA_DIRS=/nonexistent LIFE_SCREENSHOT="$QA/appimage.png" timeout 60 xvfb-run -a -s '-screen 0 1440x1080x24' ./squashfs-root/AppRun --smoke-test
+            HOME="$QA/home" LIFE_DATA_DIR="$QA/runtime-library" XDG_DATA_HOME="$QA/runtime-data" LIFE_SCREENSHOT="$QA/runtime.png" timeout 60 xvfb-run -a -s '-screen 0 1440x1080x24' "$IMAGE" --appimage-extract-and-run --smoke-test
+            file "$IMAGE" squashfs-root/usr/bin/nithi-life
+          } 2>&1 | tee "$QA/appimage-checks.log"
+      - name: Retain packages and verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: conway-linux-packages-${{ matrix.arch }}
+          path: dist/conway-linux/
+          if-no-files-found: error
+          retention-days: 14

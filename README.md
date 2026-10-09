@@ -12,9 +12,9 @@ Open-source app editions by Nithilan Vivek. [Project website](https://nithi.land
 
 ## Releases
 
-Download packages from [GitHub Releases](https://github.com/nithilanvivek/conways-game-of-life-lab/releases). Compiled packages are release attachments, not committed to source history. Checksums accompany downloads. Existing files are republished unchanged; publishing them does not add new platform testing or signing.
+Download packages from [GitHub Releases](https://github.com/nithilanvivek/conways-game-of-life-lab/releases). Compiled packages are release attachments, not committed to source history. Checksums accompany downloads. Windows/macOS packages are republished unchanged. Native Linux and ChromeOS packages were built and verified on 2026-10-09; their evidence and requirements are documented below.
 
-The public desktop release is v3.0. Its existing Windows payload has internal version 3.2-testing; the Mac app has internal version 3.1/build 8. Package names and app identities are preserved. The current native ChromeOS APK is debug-signed and remains a testing edition. Legacy Android/ChromeOS v2.0 packages are separate release-signed editions. Native Linux binaries require compatible GTK3/JSON-GLib system libraries; they are not Flatpaks.
+The public desktop release is v3.0. Its existing Windows payload has internal version 3.2-testing; the Mac app has internal version 3.1/build 8. Package names and app identities are preserved. The public native ChromeOS v3.0 APK is non-debuggable and release-signed with the same permanent nithi.land certificate as v2.0. It keeps the ChromeOS app ID and updates versionCode to 10. Native Linux v3.0 AppImage/DEB packages are available for x86_64 and ARM64, targeting Ubuntu 24.04 or compatible recent Linux. They are not Flatpaks. Legacy mobile Android v2.0 and Store builds remain separate editions.
 
 ## Native Linux build
 
@@ -27,3 +27,9 @@ See each platform README. Android builds require a suitable JDK, Android SDK and
 ## Contributing
 
 Open issues and pull requests in this repository. Current app source lives here; nithi.land retains deployed copies and historical download URLs. Do not commit personal charts, autosaves, databases, credentials or signing material.
+
+## Native v3.0 package update — 2026-10-09
+
+The original `v3.0` tag and `conways-game-of-life-lab-3.0-source.tar.gz` attachment remain immutable. Updated package source is pinned separately by `v3.0-packages.1` and the `conways-game-of-life-lab-3.0-packages-source.tar.gz` attachment on the v3.0 release. It includes the package scripts, public v3.0 labels and release signing configuration; no Meson conversion was made.
+
+Linux package CI run 37904649763 passed DEB upgrade/install and AppImage extracted/runtime launch on both architectures. AppImages bundle GTK resources and dependency notices; DEB dependencies come from dpkg-shlibdeps. Read `apps/conway-native/linux/packaging/README.md`. ChromeOS release build/lint, signature verification, in-place update from the old signed APK and all 10 headless Android desktop user-flow instrumentation tests passed. The release certificate SHA-256 is `6990fa6f245dc4eea9c282037777cce9cb37500e67fd927c65bf653c078a18e0`. Actual Chromebook/Flatpak sandbox testing remains separate.

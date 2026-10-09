@@ -1,10 +1,27 @@
 plugins { id 'com.android.application' }
+def releaseKeystorePath = System.getenv('NITHI_ANDROID_KEYSTORE')
+def releaseStorePassword = System.getenv('NITHI_ANDROID_STORE_PASSWORD')
+def releaseKeyPassword = System.getenv('NITHI_ANDROID_KEY_PASSWORD')
+def releaseKeyAlias = System.getenv('NITHI_ANDROID_KEY_ALIAS') ?: 'nithi-land-release'
 android {
     namespace 'land.nithi.life'
     useLibrary 'android.test.runner'
     useLibrary 'android.test.base'
     compileSdk { version = release(36) { minorApiLevel = 1 } }
-    defaultConfig { applicationId 'land.nithi.conwaylifelab.chromeos'; minSdk 26; targetSdk 36; versionCode 9; versionName '3.1'; testInstrumentationRunner 'android.test.InstrumentationTestRunner' }
+    defaultConfig { applicationId 'land.nithi.conwaylifelab.chromeos'; minSdk 26; targetSdk 36; versionCode 10; versionName '3.0'; testInstrumentationRunner 'android.test.InstrumentationTestRunner' }
+    buildFeatures { buildConfig true }
+    testBuildType = project.findProperty('lifeTestBuildType') ?: 'debug'
     sourceSets { main { assets.srcDirs += ["../../shared"] } }
-    buildTypes { release { minifyEnabled false } }
+    signingConfigs {
+        release {
+            if (releaseKeystorePath && releaseStorePassword && releaseKeyPassword) {
+                storeFile file(releaseKeystorePath)
+                storePassword releaseStorePassword
+                keyPassword releaseKeyPassword
+                keyAlias releaseKeyAlias
+                storeType 'PKCS12'
+            }
+        }
+    }
+    buildTypes { release { debuggable false; minifyEnabled false; signingConfig signingConfigs.release } }
 }
