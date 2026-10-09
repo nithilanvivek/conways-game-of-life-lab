@@ -1,0 +1,32 @@
+name: Capture Conway Windows screenshots
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: windows-2025
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - name: Compile the Windows app and capture its interface
+        shell: pwsh
+        run: |
+          $native = "$PWD/apps/conway-native"
+          dotnet publish "$native/windows/NithiLife.csproj" -c Release -r win-x64 --self-contained true -o "$PWD/dist/windows-screenshot-app"
+          if ($LASTEXITCODE) { throw 'App compilation failed.' }
+          $assembly = "$native/windows/bin/Release/net10.0-windows/win-x64/Conway's Game of Life Lab.dll"
+          dotnet run --project "$native/tests/windows-ui/WindowsUiChecks.csproj" -c Release "-p:ConwayAssemblyPath=$assembly" -- "$PWD/dist/windows-screenshots"
+          if ($LASTEXITCODE) { throw 'Windows UI checks or capture failed.' }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: conway-windows-screenshots-3.0
+          path: |
+            dist/windows-screenshots/*.png
+            dist/windows-screenshots/windows-ui-report.json
+          if-no-files-found: error
+          retention-days: 30

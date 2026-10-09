@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Automation.Provider;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -79,8 +80,23 @@ internal static class Program {
         Require(!window.Running && window.Engine.Generation == paused, "Stop pauses the simulation");
         using (var saved = JsonDocument.Parse(File.ReadAllText(Path.Combine(output, "isolated-data/canvas.life.json"))))
             Require(saved.RootElement.GetProperty("generation").GetInt64() == paused, "Simulation autosave records the displayed generation");
-        // Real rendered UI screenshots, with a built-in demo pattern and no tour overlay.
-        window.Engine.LoadPattern(Catalog.All[2]); window.Update(); window.Board.Fit(true);
+        // Render the real app layout at native 1080p, independent of the CI monitor size.
+        // The host monitor is only 1024px wide; enlarging its screenshot would blur text.
+        var root = (Grid)((AdornerDecorator)window.Content).Child;
+        root.Width = 1920; root.Height = 1080; root.Background = window.Background;
+        TextOptions.SetTextRenderingMode(root, TextRenderingMode.Grayscale);
+        void Layout() {
+            root.Measure(new Size(1920, 1080)); root.Arrange(new Rect(0, 0, 1920, 1080));
+            root.UpdateLayout();
+        }
+        void Capture(string name, bool fitLiving = true) {
+            window.Update(); Layout(); window.Board.Fit(fitLiving);
+            var bitmap = new RenderTargetBitmap(1920, 1080, 96, 96, PixelFormats.Pbgra32);
+            bitmap.Render(root);
+            var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+            using var file = File.Create(Path.Combine(output, name + ".png")); encoder.Save(file);
+            Require(root.ActualWidth == 1920 && root.ActualHeight == 1080, name + " renders at native 1920 × 1080");
+        }
         var picker = Descendants<ComboBox>(window).Single();
         foreach (var theme in new[] { "Dark", "Light", "Sepia" }) {
             picker.SelectedItem = theme; await Task.Delay(250);
@@ -88,18 +104,26 @@ internal static class Program {
             Require(!LifeWindow.Panel.IsFrozen, theme + " theme brush remains mutable after WPF rendering");
             var expectedPanel = theme == "Light" ? "#FFF0F0F0" : theme == "Sepia" ? "#FFEAD8B8" : "#FF121A1A";
             Require(LifeWindow.Panel.Color.ToString() == expectedPanel, theme + " theme paints the expected panel color");
-            window.UpdateLayout();
-            var content = (FrameworkElement)window.Content;
-            var dpi = VisualTreeHelper.GetDpi(content);
-            var bitmap = new RenderTargetBitmap((int)Math.Ceiling(content.ActualWidth * dpi.DpiScaleX), (int)Math.Ceiling(content.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
-            bitmap.Render(content);
-            var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
-            using var file = File.Create(Path.Combine(output, "Conway-Windows-3.0-" + theme + ".png")); encoder.Save(file);
+            int pattern = theme == "Dark" ? 2 : theme == "Light" ? 1 : 5;
+            window.Engine.LoadPattern(Catalog.All[pattern]);
+            for (int i = 0; i < (theme == "Light" ? 18 : 80); i++) window.Engine.Step();
+            Capture("Conway-Windows-3.0-" + theme);
         }
+        picker.SelectedItem = "Dark"; await Task.Delay(250);
+        window.Engine.LoadPattern(Catalog.All[1]);
+        foreach (var cell in window.Engine.Live) window.Engine.Select(cell.X, cell.Y);
+        window.SelectionChanged();
+        Capture("Conway-Windows-3.0-Pattern-Selection");
+        Require(window.Engine.Selection.Count > 0, "Editing screenshot contains a selected pattern");
+        picker.SelectedItem = "Light"; await Task.Delay(250);
+        window.Engine.ConfigureBorders(true, 64, 40); window.Engine.LoadPattern(Catalog.All[2]);
+        for (int i = 0; i < 40; i++) window.Engine.Step();
+        Capture("Conway-Windows-3.0-Finite-Canvas", false);
+        Require(window.Engine.Borders && window.Engine.Cols == 64 && window.Engine.Rows == 40, "Finite canvas screenshot displays configured boundaries");
         File.WriteAllText(Path.Combine(output, "windows-ui-report.json"), JsonSerializer.Serialize(new {
             platform = Environment.OSVersion.ToString(), compiledAssembly = typeof(LifeWindow).Assembly.GetName().Version?.ToString(), checks,
             interaction = "WPF UI Automation Invoke provider; actual mouse and installed MSIX testing remain separate",
-            screenshots = "Native WPF RenderTargetBitmap captures of the compiled app content"
+            screenshots = "Five native 1920 × 1080 WPF RenderTargetBitmap captures of compiled app content; no upscaling, OS chrome or marketing overlays"
         }, new JsonSerializerOptions { WriteIndented = true }));
     }
 }
