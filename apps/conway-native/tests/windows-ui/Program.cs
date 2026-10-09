@@ -85,6 +85,9 @@ internal static class Program {
         foreach (var theme in new[] { "Dark", "Light", "Sepia" }) {
             picker.SelectedItem = theme; await Task.Delay(250);
             Require(window.Theme == theme, theme + " theme selection updates the app");
+            Require(!LifeWindow.Panel.IsFrozen, theme + " theme brush remains mutable after WPF rendering");
+            var expectedPanel = theme == "Light" ? "#FFF0F0F0" : theme == "Sepia" ? "#FFEAD8B8" : "#FF121A1A";
+            Require(LifeWindow.Panel.Color.ToString() == expectedPanel, theme + " theme paints the expected panel color");
             window.UpdateLayout();
             var content = (FrameworkElement)window.Content;
             var dpi = VisualTreeHelper.GetDpi(content);
