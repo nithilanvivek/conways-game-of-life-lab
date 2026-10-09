@@ -84,7 +84,15 @@ internal static class Program {
         // The host monitor is only 1024px wide; enlarging its screenshot would blur text.
         var root = (Grid)((AdornerDecorator)window.Content).Child;
         root.Width = 1920; root.Height = 1080; root.Background = window.Background;
+        root.Resources = window.Resources;
+        TextElement.SetFontFamily(root, window.FontFamily);
+        TextElement.SetFontSize(root, window.FontSize);
+        TextElement.SetForeground(root, window.Foreground);
         TextOptions.SetTextRenderingMode(root, TextRenderingMode.Grayscale);
+        var picker = Descendants<ComboBox>(window).Single();
+        // Remove the CI desktop's ancestor clip while retaining the actual UI controls,
+        // resources and inherited typography. This changes the capture host only.
+        ((AdornerDecorator)window.Content).Child = null;
         void Layout() {
             root.Measure(new Size(1920, 1080)); root.Arrange(new Rect(0, 0, 1920, 1080));
             root.UpdateLayout();
@@ -97,7 +105,6 @@ internal static class Program {
             using var file = File.Create(Path.Combine(output, name + ".png")); encoder.Save(file);
             Require(root.ActualWidth == 1920 && root.ActualHeight == 1080, name + " renders at native 1920 × 1080");
         }
-        var picker = Descendants<ComboBox>(window).Single();
         foreach (var theme in new[] { "Dark", "Light", "Sepia" }) {
             picker.SelectedItem = theme; await Task.Delay(250);
             Require(window.Theme == theme, theme + " theme selection updates the app");
