@@ -44,7 +44,8 @@ internal static class Program {
         }
     }
     static void Invoke(Window window, string label) {
-        var button = Descendants<Button>(window).Single(b => b.Content as string == label);
+        var button = Descendants<Button>(window).Single(b => b.Content as string == label ||
+            b.Content is FrameworkElement content && (content.Tag as string == label || Descendants<TextBlock>(content).Any(text => text.Text == label)));
         if (!button.IsEnabled) throw new Exception("Disabled button: " + label);
         var peer = new ButtonAutomationPeer(button);
         ((IInvokeProvider)peer.GetPattern(PatternInterface.Invoke)).Invoke();
